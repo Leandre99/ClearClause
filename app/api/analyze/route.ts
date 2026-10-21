@@ -1,12 +1,20 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { NextResponse } from "next/server";
 import { DEMO_ANALYSIS } from "@/lib/demo";
+import { normalizeAnalysis } from "@/lib/normalize";
+import { analyzeWithOpenAICompatible } from "@/lib/openai-compatible";
 import { MAX_CHARS } from "@/lib/types";
-import type { Analysis, AnalyzeResponse, Language } from "@/lib/types";
+import type { AnalyzeResponse, Language } from "@/lib/types";
 
 export const maxDuration = 60;
 
 const MODEL = process.env.ANTHROPIC_MODEL ?? "claude-sonnet-5-5";
+
+// Defaults point at Google Gemini's OpenAI-compatible endpoint (free tier).
+// Model names change over time: override with LLM_MODEL if this one is retired.
+const DEFAULT_LLM_BASE_URL =
+  "https://generativelanguage.googleapis.com/v1beta/openai";
+const DEFAULT_LLM_MODEL = "gemini-2.5-flash";
 
 const SYSTEM_PROMPT = `You are ClearClause, an assistant that explains legal and administrative documents (leases, employment contracts, invoices, official letters, terms of service) to people with no legal background.
 
@@ -115,8 +123,9 @@ export async function POST(request: Request) {
     );
   }
 
-  const apiKey = process.env.ANTHROPIC_API_KEY;
-  if (!apiKey) {
+  const anthropicKey = process.env.ANTHROPIC_API_KEY;
+  const llmKey = process.env.LLM_API_KEY;
+  if (!anthropicKey && !llmKey) {
     // Simulated mode: no key configured, so return the sample analysis.
     const response: AnalyzeResponse = {
       analysis: DEMO_ANALYSIS[language],
@@ -125,29 +134,40 @@ export async function POST(request: Request) {
     return NextResponse.json(response);
   }
 
-  try {
-    const client = new Anthropic({ apiKey });
-    const message = await client.messages.create({
-      model: MODEL,
-      max_tokens: 4096,
-      system: SYSTEM_PROMPT,
-      tools: [ANALYSIS_TOOL],
-      tool_choice: { type: "tool", name: ANALYSIS_TOOL.name },
-      messages: [
-        {
-          role: "user",
-          content: `Language for the answer: ${language === "fr" ? "French" : "English"}.\n\n<document>\n${text}\n</document>`,
-        },
-      ],
-    });
+  const userContent = `Language for the answer: ${language === "fr" ? "French" : "English"}.\n\n<document>\n${text}\n</document>`;
 
-    const toolUse = message.content.find((block) => block.type === "tool_use");
-    if (!toolUse || toolUse.type !== "tool_use") {
-      throw new Error("No analysis returned");
+  try {
+    let raw: unknown;
+
+    if (llmKey) {
+      // Free-tier friendly path: any OpenAI-compatible provider (Gemini, Groq, ...).
+      raw = await analyzeWithOpenAICompatible({
+        apiKey: llmKey,
+        baseUrl: process.env.LLM_BASE_URL ?? DEFAULT_LLM_BASE_URL,
+        model: process.env.LLM_MODEL ?? DEFAULT_LLM_MODEL,
+        systemPrompt: SYSTEM_PROMPT,
+        userContent,
+      });
+    } else {
+      const client = new Anthropic({ apiKey: anthropicKey });
+      const message = await client.messages.create({
+        model: MODEL,
+        max_tokens: 4096,
+        system: SYSTEM_PROMPT,
+        tools: [ANALYSIS_TOOL],
+        tool_choice: { type: "tool", name: ANALYSIS_TOOL.name },
+        messages: [{ role: "user", content: userContent }],
+      });
+
+      const toolUse = message.content.find((block) => block.type === "tool_use");
+      if (!toolUse || toolUse.type !== "tool_use") {
+        throw new Error("No analysis returned");
+      }
+      raw = toolUse.input;
     }
 
     const response: AnalyzeResponse = {
-      analysis: toolUse.input as Analysis,
+      analysis: normalizeAnalysis(raw),
       demo: false,
     };
     return NextResponse.json(response);

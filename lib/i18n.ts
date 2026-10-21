@@ -49,7 +49,7 @@ export const STRINGS: Record<
     disclaimer:
       "ClearClause is an educational tool, not a lawyer. It can make mistakes. For important decisions, check with a qualified professional.",
     privacy:
-      "Your text is sent to the Claude API to be analyzed. It is not stored by this app.",
+      "Your text is sent to an AI provider to be analyzed. This app does not store it, but avoid pasting sensitive personal data: some free AI tiers may use inputs to improve their models.",
     errorGeneric: "Something went wrong. Please try again.",
     severity: { low: "Low", medium: "Medium", high: "High" },
   },
@@ -76,7 +76,7 @@ export const STRINGS: Record<
     disclaimer:
       "ClearClause est un outil éducatif, pas un avocat. Il peut se tromper. Pour les décisions importantes, consultez un professionnel qualifié.",
     privacy:
-      "Votre texte est envoyé à l'API Claude pour être analysé. Il n'est pas conservé par cette application.",
+      "Votre texte est envoyé à un fournisseur d'IA pour être analysé. Cette application ne le conserve pas, mais évitez de coller des données personnelles sensibles : certaines offres gratuites d'IA peuvent utiliser les textes pour améliorer leurs modèles.",
     errorGeneric: "Une erreur est survenue. Veuillez réessayer.",
     severity: { low: "Faible", medium: "Moyen", high: "Élevé" },
   },
