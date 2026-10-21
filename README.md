@@ -39,7 +39,9 @@ If no API key is configured, the app does **not** analyze your text. It returns 
 
 ## Setup
 
-Requirements: Node.js 20+ and npm.
+Requirements: Node.js 22.13+ (or 20.19+) and npm. Next.js itself needs 20.9+; slightly older versions still install but print engine warnings from the linting tools.
+
+The first `npm install` can take a while on a slow connection or disk.
 
 ```bash
 git clone https://github.com/Leandre99/ClearClause.git
