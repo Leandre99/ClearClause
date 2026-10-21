@@ -11,10 +11,12 @@ export const maxDuration = 60;
 const MODEL = process.env.ANTHROPIC_MODEL ?? "claude-sonnet-5-5";
 
 // Defaults point at Google Gemini's OpenAI-compatible endpoint (free tier).
-// Model names change over time: override with LLM_MODEL if this one is retired.
+// "-latest" is an alias that follows the current model, so it does not break
+// when Google retires a pinned name. The Flash-Lite model answers in a few
+// seconds; set LLM_MODEL=gemini-flash-latest for deeper (but slower) analysis.
 const DEFAULT_LLM_BASE_URL =
   "https://generativelanguage.googleapis.com/v1beta/openai";
-const DEFAULT_LLM_MODEL = "gemini-2.5-flash";
+const DEFAULT_LLM_MODEL = "gemini-flash-lite-latest";
 
 const SYSTEM_PROMPT = `You are ClearClause, an assistant that explains legal and administrative documents (leases, employment contracts, invoices, official letters, terms of service) to people with no legal background.
 

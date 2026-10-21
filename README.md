@@ -27,6 +27,12 @@ Legal and administrative documents are written for lawyers, not for the people w
    - important dates and deadlines
    - questions to ask the other party
 
+## Screenshots
+
+![Pasting a document and getting a plain-language summary](docs/screenshot-input.jpg)
+
+![Key points and risky clauses with severity and suggestions](docs/screenshot-results.jpg)
+
 ## Demo mode
 
 If no API key is configured, the app does **not** analyze your text. It returns a pre-written sample result about the built-in sample lease, and shows a banner saying so. This lets people try the interface without an API key. Real analysis requires a key (a free one works, see below).
@@ -47,7 +53,7 @@ Open http://localhost:3000.
 
 ### Getting a free key
 
-The easiest option is a free [Google Gemini](https://aistudio.google.com) API key. Put it in `.env.local` as `LLM_API_KEY=...`. [Groq](https://console.groq.com) also has a free tier: see the commented lines in `.env.example` for its `LLM_BASE_URL` and `LLM_MODEL`. Any OpenAI-compatible provider works. Free tiers have rate limits, and model names change over time, so override `LLM_MODEL` if the default is retired.
+The easiest option is a free [Google Gemini](https://aistudio.google.com) API key. Put it in `.env.local` as `LLM_API_KEY=...`. [Groq](https://console.groq.com) also has a free tier: see the commented lines in `.env.example` for its `LLM_BASE_URL` and `LLM_MODEL`. Any OpenAI-compatible provider works. The default model is `gemini-flash-lite-latest` (answers in a few seconds); set `LLM_MODEL=gemini-flash-latest` for a deeper but slower analysis. Free tiers have rate limits and occasional "high demand" errors (the app retries automatically), and model names change over time, so override `LLM_MODEL` if the default is retired.
 
 If you have an Anthropic account you can set `ANTHROPIC_API_KEY` instead; it is used only when `LLM_API_KEY` is empty.
 
