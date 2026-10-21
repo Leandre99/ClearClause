@@ -21,6 +21,8 @@ Legal and administrative documents are written for lawyers, not for the people w
 1. Paste the document text (up to 20,000 characters).
 2. Pick English or French.
 3. Get back:
+   - your document **annotated**: risky clauses are highlighted in place (red / amber / green) and clicking one jumps to its explanation
+   - an overall risk level
    - a short plain-language summary
    - the key points explained simply
    - risky clauses, quoted and rated low / medium / high, with a suggestion for each
@@ -29,9 +31,9 @@ Legal and administrative documents are written for lawyers, not for the people w
 
 ## Screenshots
 
-![Pasting a document and getting a plain-language summary](docs/screenshot-input.jpg)
+![ClearClause home page: paste a document or try the sample lease](docs/screenshot-input.jpg)
 
-![Key points and risky clauses with severity and suggestions](docs/screenshot-results.jpg)
+![Annotated document with highlighted risky clauses, overall risk level and plain-language summary](docs/screenshot-results.jpg)
 
 ## Demo mode
 
